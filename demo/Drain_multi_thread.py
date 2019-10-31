@@ -5,18 +5,29 @@ import time, threading
 sys.path.append('../')
 from logparser import Drain
 
-input_dir  = '../logs/'  # The input directory of log file
+input_dir  = '../logs/test/'  # The input directory of log file
 output_dir = 'Drain_test_result/'  # The output directory of parsing results
 '''
-0: auth.log
-1: kern.log
-2: Xorg.0.log
+0: access.log #/apache2		'<a> <b> <c> <d> <e> <f> <Content>'
+1: cinder_error.log #/apache2		'<a> <b> <c> <d> <e> <Content>'
+2: error.log.1 #/apache2		'<a> <b> <c> <d> <e> <Content>'
+3: keystone_access.log #/apache2 	'<a> <b> <c> <d> <Content>'
+4: nova_placement_access.log #/apache2 		'<a> <b> <c> <d> <e> <Content>'
+5: nova_placement_error.log.1 #/apache2 	'<a> <b> <Content>'
 '''
-log_files   = ['auth.log', 'kern.log', 'Xorg.0.log']  # The input log file name
+log_files   = ['access.log', 
+				'cinder_error.log',
+				'error.log.1',
+				'keystone_access.log',
+				'nova_placement_access.log',
+				'nova_placement_error.log.1']  # The input log file name
 log_formats = ['<a> <b> <c> <d> <e> <f> <Content>', 
-			   '<a> <b> <c> <d> <e> <f> <g> <Content>',
+			   '<a> <b> <c> <d> <e> <Content>',
+			   '<a> <b> <c> <d> <e> <Content>',
+			   '<a> <b> <c> <d> <Content>',
+			   '<a> <b> <c> <d> <e> <Content>',
 			   '<a> <b> <Content>']  # HDFS log format
-cnt = 3
+cnt = 6
 
 
 # Regular expression list for optional preprocessing (default: [])
@@ -38,3 +49,4 @@ def call_logParser(n, in_dir, out_dir, dep, st_v, rex_v):
 for i in range(cnt):
 	t = threading.Thread(target=call_logParser, args=(i, input_dir, output_dir, depth, st, regex), name='{}_{}'.format('thread', log_files[i]))
 	t.start()
+
